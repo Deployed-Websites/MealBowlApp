@@ -18,3 +18,4 @@ sqlparse==0.5.3
 toml==0.10.2
 tzdata==2025.2
 wheel==0.45.1
+python-dotenv==1.0.1
