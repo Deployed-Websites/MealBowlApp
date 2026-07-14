@@ -1,1 +1,1 @@
-python manage.py migrate && gunicorn PostgreTest.wsgi --log-file -
+web: python manage.py migrate && gunicorn PostgreTest.wsgi --log-file -
