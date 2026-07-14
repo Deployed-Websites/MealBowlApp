@@ -38,12 +38,12 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 CORS_ALLOW_CREDENTIALS = True
 SECURE_SSL_REDIRECT = True
 
-ROOT_URLCONF = "testDB.urls"
+ROOT_URLCONF = "PostgreTest.urls"
 
-WSGI_APPLICATION = "testDB.wsgi.application"
+WSGI_APPLICATION = "PostgreTest.wsgi.application"
 
 INSTALLED_APPS = [
-    "DatabaseLogic",
+    "testDB",
     "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "DatabaseLogic.middleware.CustomMiddleware.CustomCsrfMiddleware",
+    "testDB.middleware.CustomMiddleware.CustomCsrfMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
