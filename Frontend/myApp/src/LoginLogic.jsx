@@ -1,4 +1,10 @@
-import { setCookie, getCookieFromBrowser } from "./auth.js";
+import {
+  createUser as apiCreateUser,
+  login as apiLogin,
+  logout as apiLogout,
+  checkUserPerm,
+  ensureCSRFToken,
+} from "./utils/api.js";
 import { useState, useEffect, useRef } from "react";
 import LoginStyles from "./Login.module.css";
 function RegisterorLoginPage({
@@ -59,74 +65,11 @@ function RegisterorLoginPage({
       }));
     }
   }
-  async function ensureCSRFToken() {
-    let token = await getCookieFromBrowser("csrftoken");
-    if (!token) {
-      await fetch(
-        "https://mealbowlapp.onrender.com/databaseTesting/setToken/",
-        {
-          method: "GET",
-          credentials: "include",
-        },
-      );
-      // wait until cookie actually exists
-      for (let i = 0; i < 10; i++) {
-        token = await getCookieFromBrowser("csrftoken");
-        if (token) break;
-        await new Promise((r) => setTimeout(r, 100)); // wait 100ms
-      }
-    }
-    return token;
-  }
-  async function SendData(url, data = {}) {
-    let response;
-    let dataToUse;
-    if (Object.keys(registerData).length !== 0) {
-      dataToUse = registerData;
-    } else {
-      if (Object.keys(data).length !== 0) {
-        dataToUse = data;
-      }
-    }
-    console.log(dataToUse);
-    let CSRFToken = await ensureCSRFToken();
-    try {
-      const sendData = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": CSRFToken,
-        },
-        credentials: "include",
-        body: JSON.stringify(dataToUse),
-      });
-      updateRegisterData({ name: "email", value: CSRFToken }, false);
-      const contentType = sendData.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        response = await sendData.json();
-      } else {
-        response = await sendData.text();
-      }
-      if (sendData.ok) {
-        console.log("Server responded with: ", response);
-        sessionStorage.setItem("Logged-In", true);
-      } else {
-        console.log("Server threw an error", response);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-    return response;
-  }
   async function register() {
     setprocessing(true);
-    const make = await SendData(
-      "https://mealbowlapp.onrender.com/databaseTesting/createUser/",
-    );
+    const make = await apiCreateUser(registerData);
     if (make.message) {
-      const loginToAccount = await SendData(
-        "https://mealbowlapp.onrender.com/databaseTesting/login/",
-      );
+      const loginToAccount = await apiLogin(registerData);
       if (loginToAccount.message) {
         setreShowSave(true);
         localStorage.setItem(
@@ -185,10 +128,7 @@ function RegisterorLoginPage({
       }
     }
     setprocessing(true);
-    const check = await SendData(
-      "https://mealbowlapp.onrender.com/databaseTesting/login/",
-      dataToUse,
-    );
+    const check = await apiLogin(dataToUse);
     if (check.message) {
       const admin = await checkAdmin();
       setreShowSave(true);
@@ -223,41 +163,13 @@ function RegisterorLoginPage({
     }
   }
   async function checkAdmin() {
-    const adminCheck = await fetch(
-      "https://mealbowlapp.onrender.com/databaseTesting/checkUserperm/",
-      {
-        credentials: "include",
-      },
-    );
-    const contentType = adminCheck.headers.get("content-type");
-    let result;
-    if (contentType && contentType.includes("application/json")) {
-      result = await adminCheck.json();
-    } else {
-      result = await adminCheck.text();
-    }
-    if (result.admin) {
-      return true;
-    } else {
-      return false;
-    }
+    const result = await checkUserPerm();
+    return !!result.admin;
   }
   async function logoutfunction() {
     sessionStorage.removeItem("admin");
     setLogoutState("Logging out");
-    const logoutCall = await fetch(
-      "https://mealbowlapp.onrender.com/databaseTesting/logout/",
-      {
-        credentials: "include",
-      },
-    );
-    const contentType = logoutCall.headers.get("content-type");
-    let result;
-    if (contentType && contentType.includes("application/json")) {
-      result = await logoutCall.json();
-    } else {
-      result = await logoutCall.text();
-    }
+    const result = await apiLogout();
     if (result.message) {
       setDontSkipLogin(true);
       sessionStorage.setItem("Logged-In", false);
@@ -296,7 +208,7 @@ function RegisterorLoginPage({
     (async () => {
       const flag = JSON.parse(sessionStorage.getItem("Logged-In")) ?? false;
       if (!flag && !manualLogout) {
-        await setCookie();
+        await ensureCSRFToken();
         setCookieSet(true);
         const ver = await verifyLocally();
         console.log(ver);

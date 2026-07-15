@@ -1,36 +1,18 @@
 import { useEffect, useState } from "react";
-import { setCookie, getCookieFromBrowser } from "./auth.js";
+import { getEverything, getPrices as fetchPrices } from "./utils/api.js";
 
 function AdminPage() {
   const [allData, setAllData] = useState([]);
   const [rows, setRows] = useState(0);
   let getAllresult = null;
   let getPricesresult = null;
+  // NOTE: still not called anywhere below (same as before this refactor) -
+  // render() only ever reads from the sessionStorage cache. Left as-is for
+  // now since fixing that behavior is a separate change from consolidating
+  // the API layer.
   async function callAdminData() {
-    const getAll = await fetch(
-      "https://mealbowlapp.onrender.com/databaseTesting/getEverything/",
-      {
-        credentials: "include",
-      },
-    );
-    const getPrices = await fetch(
-      "https://mealbowlapp.onrender.com/databaseTesting/getPrices/",
-      {
-        credentials: "include",
-      },
-    );
-    const contentType = getAll.headers.get("content-type");
-    const contentType2 = getPrices.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      getAllresult = await getAll.json();
-    } else {
-      getAllresult = await getAll.text();
-    }
-    if (contentType2 && contentType2.includes("application/json")) {
-      getPricesresult = await getPrices.json();
-    } else {
-      getPricesresult = await getPrices.text();
-    }
+    getAllresult = await getEverything();
+    getPricesresult = await fetchPrices();
     sessionStorage.setItem("AdminData", JSON.stringify(getAllresult));
     sessionStorage.setItem("AdminPriceData", JSON.stringify(getPricesresult));
   }

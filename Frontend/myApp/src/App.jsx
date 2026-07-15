@@ -12,67 +12,36 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 const basename = import.meta.env.DEV ? "/" : "/MealBowlApp/docs";
 import { useState } from "react";
+import {
+  getEverythingForThatUser,
+  getEverything,
+  getPrices as fetchPrices,
+} from "./utils/api.js";
 
 function App() {
   async function callCheckoutData() {
-    const getAll = await fetch(
-      "https://mealbowlapp.onrender.com/databaseTesting/getEverythingForThatUser/",
-      {
-        credentials: "include",
-      },
-    );
-    const contentType = getAll.headers.get("content-type");
-    let getAllresult;
-    if (contentType && contentType.includes("application/json")) {
-      getAllresult = await getAll.json();
-    } else {
-      getAllresult = await getAll.text();
+    let result = await getEverythingForThatUser();
+    if (Object.keys(result).length === 0) {
+      result = {};
     }
-    if (Object.keys(getAllresult).length === 0) {
-      getAllresult = {};
-    }
-    if (getAll.ok && getAllresult && !getAllresult.error) {
-      sessionStorage.setItem("CheckoutData", JSON.stringify(getAllresult));
+    if (result && !result.error) {
+      sessionStorage.setItem("CheckoutData", JSON.stringify(result));
     }
   }
   async function callAdminData() {
-    const getAll = await fetch(
-      "https://mealbowlapp.onrender.com/databaseTesting/getEverything/",
-      {
-        credentials: "include",
-      },
-    );
-    const getPrices = await fetch(
-      "https://mealbowlapp.onrender.com/databaseTesting/getPrices/",
-      {
-        credentials: "include",
-      },
-    );
-    const contentType = getAll.headers.get("content-type");
-    const contentType2 = getPrices.headers.get("content-type");
-    let getAllresult;
-    let getPricesresult;
-    if (contentType && contentType.includes("application/json")) {
-      getAllresult = await getAll.json();
-    } else {
-      getAllresult = await getAll.text();
+    let everythingResult = await getEverything();
+    let pricesResult = await fetchPrices();
+    if (Object.keys(everythingResult).length === 0) {
+      everythingResult = {};
     }
-    if (contentType2 && contentType2.includes("application/json")) {
-      getPricesresult = await getPrices.json();
-    } else {
-      getPricesresult = await getPrices.text();
+    if (Object.keys(pricesResult).length === 0) {
+      pricesResult = {};
     }
-    if (Object.keys(getAllresult).length === 0) {
-      getAllresult = {};
+    if (everythingResult && !everythingResult.error) {
+      sessionStorage.setItem("AdminData", JSON.stringify(everythingResult));
     }
-    if (Object.keys(getPricesresult).length === 0) {
-      getPricesresult = {};
-    }
-    if (getAll.ok && getAllresult && !getAllresult.error) {
-      sessionStorage.setItem("AdminData", JSON.stringify(getAllresult));
-    }
-    if (getPrices.ok && getPricesresult && !getPricesresult.error) {
-      sessionStorage.setItem("AdminPriceData", JSON.stringify(getPricesresult));
+    if (pricesResult && !pricesResult.error) {
+      sessionStorage.setItem("AdminPriceData", JSON.stringify(pricesResult));
     }
   }
   const [somethingChangedinLogin, setsomethingChangedinLogin] = useState(0);

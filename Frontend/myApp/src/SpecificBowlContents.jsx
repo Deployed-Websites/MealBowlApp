@@ -1,7 +1,12 @@
 import BowlContentsStyles from "./Specific.module.css";
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, Link, data } from "react-router-dom";
-import { setCookie, getCookieFromBrowser } from "./auth.js";
+import { useParams, Link } from "react-router-dom";
+import {
+  updateOrder,
+  deleteOrder,
+  updateBasket,
+  updateBasketForDeletedOrder,
+} from "./utils/api.js";
 
 function Contents({ saveChanges, text, setText, reShowSave, setreShowSave }) {
   window.scrollTo(0, 0);
@@ -164,64 +169,19 @@ function Contents({ saveChanges, text, setText, reShowSave, setreShowSave }) {
     };
     if (!del) {
       if (totalData.numberofBowls !== "" || totalData.numberofBowls) {
-        await add(
-          "https://mealbowlapp.onrender.com/databaseTesting/updateOrder/",
-          totalData,
-        );
-        await add(
-          "https://mealbowlapp.onrender.com/databaseTesting/updateBasket/",
-          totalData,
-        );
+        await updateOrder(totalData);
+        await updateBasket(totalData);
         setProcessing(false);
         setreShowSave(true);
       } else {
         console.log("An empty number of bowls cannot be sent as a request");
       }
     } else {
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/updateBasketForDeletedOrder/",
-        totalData,
-      );
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/deleteOrder/",
-        totalData,
-      );
+      await updateBasketForDeletedOrder(totalData);
+      await deleteOrder(totalData);
       setProcessing(false);
       setreShowSave(true);
     }
-  }
-  async function add(url, data) {
-    let response;
-    let CSRFToken = await getCookieFromBrowser("csrftoken");
-    if (!CSRFToken) {
-      await setCookie();
-      CSRFToken = await getCookieFromBrowser("csrftoken");
-    }
-    try {
-      const sendData = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": CSRFToken,
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-      const contentType = sendData.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        response = await sendData.json();
-      } else {
-        response = await sendData.text();
-      }
-      if (sendData.ok) {
-        console.log("Server responded with: ", response);
-      } else {
-        console.log("Server threw an error", response);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-    return response;
   }
   function toggle(toChange) {
     if (toChange == "ingredients") {

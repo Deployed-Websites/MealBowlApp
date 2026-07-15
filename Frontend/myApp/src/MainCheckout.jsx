@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { setCookie, getCookieFromBrowser } from "./auth.js";
+import {
+  updateOrder,
+  deleteOrder,
+  updateBasket,
+  updateBasketForDeletedOrder,
+} from "./utils/api.js";
 import React from "react";
-import { data } from "react-router-dom";
 function MainCheckout({
   saveChanges,
   reShowSave,
@@ -87,14 +91,8 @@ function MainCheckout({
         bowlName: bowlName,
         bowlTotal: bowlPrice,
       };
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/updateBasketForDeletedOrder/",
-        totalData,
-      );
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/deleteOrder/",
-        totalData,
-      );
+      await updateBasketForDeletedOrder(totalData);
+      await deleteOrder(totalData);
       setreShowSave(true);
     }
     if (changedValue > originalValue) {
@@ -111,14 +109,8 @@ function MainCheckout({
         bowlName: bowlName,
         bowlTotal: bowlPrice,
       };
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/updateOrder/",
-        totalData,
-      );
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/updateBasket/",
-        totalData,
-      );
+      await updateOrder(totalData);
+      await updateBasket(totalData);
       setreShowSave(true);
     } else if (0 < changedValue < originalValue) {
       dataToChange[userKey][bowlName]["NumberofBowls"] = changedValue;
@@ -135,50 +127,11 @@ function MainCheckout({
         bowlName: bowlName,
         bowlTotal: bowlPrice,
       };
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/updateOrder/",
-        totalData,
-      );
-      await add(
-        "https://mealbowlapp.onrender.com/databaseTesting/updateBasket/",
-        totalData,
-      );
+      await updateOrder(totalData);
+      await updateBasket(totalData);
       setreShowSave(true);
     }
     setCheckingOut(false);
-  }
-  async function add(url, data) {
-    let response;
-    let CSRFToken = await getCookieFromBrowser("csrftoken");
-    if (!CSRFToken) {
-      await setCookie();
-      CSRFToken = await getCookieFromBrowser("csrftoken");
-    }
-    try {
-      const sendData = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": CSRFToken,
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-      const contentType = sendData.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        response = await sendData.json();
-      } else {
-        response = await sendData.text();
-      }
-      if (sendData.ok) {
-        console.log("Server responded with: ", response);
-      } else {
-        console.log("Server threw an error", response);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-    return response;
   }
   useEffect(() => {
     let tryToPullCheckoutDataFromLocal = null;
