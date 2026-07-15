@@ -7,8 +7,11 @@ import {
   updateBasket,
   updateBasketForDeletedOrder,
 } from "./utils/api.js";
+import { useSyncContext } from "./context/SyncContext.js";
 
-function Contents({ saveChanges, text, setText, reShowSave, setreShowSave }) {
+function Contents() {
+  const { saveChanges, text, setText, reShowSave, setreShowSave } =
+    useSyncContext();
   window.scrollTo(0, 0);
   const { bowlID } = useParams();
   const [ingredientsClicked, setingredientsClicked] = useState(true);

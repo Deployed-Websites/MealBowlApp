@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import ContactStyles from "./Contact.module.css";
-function Contact(saveChanges, reShowSave, setreShowSave, text, setText) {
+import { useSyncContext } from "./context/SyncContext.js";
+function Contact() {
+  const { saveChanges, reShowSave, setreShowSave, text, setText } =
+    useSyncContext();
   const isMounted = useRef(false);
 
   useEffect(() => {

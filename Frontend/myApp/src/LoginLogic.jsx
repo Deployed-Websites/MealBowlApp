@@ -6,17 +6,19 @@ import {
   ensureCSRFToken,
 } from "./utils/api.js";
 import { useState, useEffect, useRef } from "react";
+import { useSyncContext } from "./context/SyncContext.js";
 import LoginStyles from "./Login.module.css";
-function RegisterorLoginPage({
-  setsomethingChangedinLogin,
-  saveChanges,
-  reShowSave,
-  setreShowSave,
-  processing,
-  setprocessing,
-  text,
-  setText,
-}) {
+function RegisterorLoginPage() {
+  const {
+    setsomethingChangedinLogin,
+    saveChanges,
+    reShowSave,
+    setreShowSave,
+    processing,
+    setprocessing,
+    text,
+    setText,
+  } = useSyncContext();
   const [DontSkipLogin, setDontSkipLogin] = useState(false);
   const [registerData, setRegisterData] = useState({});
   const [cookieSet, setCookieSet] = useState(false);

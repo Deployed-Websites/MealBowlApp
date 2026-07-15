@@ -1,6 +1,6 @@
 import BowlImage from "./BowlImage.jsx";
 import HomepageStyles from "./HomePage.module.css";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import React from "react";
 import bowl from "./assets/bowl.png";
 import bowl3 from "./assets/Paneer power bowl.jpg";
@@ -12,15 +12,11 @@ import bowl8 from "./assets/Rajma-Chickpea superfood bowl.jpg";
 import logo from "./assets/logo.png";
 
 import { ensureCSRFToken } from "./utils/api.js";
+import { useSyncContext } from "./context/SyncContext.js";
 import { Link } from "react-router-dom";
-function RenderBowls({
-  saveChanges,
-  reShowSave,
-  setreShowSave,
-  processing,
-  text,
-  setText,
-}) {
+function RenderBowls() {
+  const { saveChanges, reShowSave, setreShowSave, processing, text, setText } =
+    useSyncContext();
   const isMounted = useRef(false);
 
   useEffect(() => {

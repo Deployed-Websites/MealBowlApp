@@ -5,14 +5,11 @@ import {
   updateBasket,
   updateBasketForDeletedOrder,
 } from "./utils/api.js";
+import { useSyncContext } from "./context/SyncContext.js";
 import React from "react";
-function MainCheckout({
-  saveChanges,
-  reShowSave,
-  setreShowSave,
-  text,
-  setText,
-}) {
+function MainCheckout() {
+  const { saveChanges, reShowSave, setreShowSave, text, setText } =
+    useSyncContext();
   const [allData, setAllData] = useState([]);
   const [rows, setRows] = useState(0);
   const [checkingOut, setCheckingOut] = useState(false);
