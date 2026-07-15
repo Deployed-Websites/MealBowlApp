@@ -21,8 +21,6 @@ function RegisterorLoginPage() {
   } = useSyncContext();
   const [DontSkipLogin, setDontSkipLogin] = useState(false);
   const [registerData, setRegisterData] = useState({});
-  const [cookieSet, setCookieSet] = useState(false);
-  const [name, setName] = useState("");
   const [manualLogout, setManualLogout] = useState(false);
   const [LogoutState, setLogoutState] = useState("Logout");
   const isMounted = useRef(false);
@@ -139,7 +137,6 @@ function RegisterorLoginPage() {
       } else {
         sessionStorage.setItem("admin", false);
       }
-      setName(registerData.username);
       localStorage.setItem(
         "User-" + dataToUse.username,
         JSON.stringify(dataToUse),
@@ -211,7 +208,6 @@ function RegisterorLoginPage() {
       const flag = JSON.parse(sessionStorage.getItem("Logged-In")) ?? false;
       if (!flag && !manualLogout) {
         await ensureCSRFToken();
-        setCookieSet(true);
         const ver = await verifyLocally();
         console.log(ver);
         if (ver) {
@@ -231,6 +227,12 @@ function RegisterorLoginPage() {
         }
       }
     })();
+    // Intentionally runs once on mount only, to restore login state from
+    // localStorage. Adding `manualLogout`/`verifyLocally` as deps would
+    // change behavior (e.g. re-firing this right after every logout) -
+    // properly fixing that means wrapping verifyLocally -> verifyUsingDatabase
+    // -> checkAdmin in useCallback, which is a bigger refactor for later.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
