@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   updateOrder,
   deleteOrder,
@@ -10,7 +10,6 @@ import React from "react";
 function MainCheckout() {
   const { saveChanges, reShowSave, setreShowSave, text, setText } =
     useSyncContext();
-  const [allData, setAllData] = useState([]);
   const [rows, setRows] = useState(0);
   const [checkingOut, setCheckingOut] = useState(false);
   const [cur, setCur] = useState({});
@@ -25,7 +24,7 @@ function MainCheckout() {
       isMounted.current = false;
     };
   }, []);
-  async function saveClicked() {
+  const saveClicked = useCallback(async () => {
     if (!isMounted.current) return;
     setText("Syncing changes");
     console.log("Syncing changes");
@@ -35,7 +34,7 @@ function MainCheckout() {
     console.log("Synced changes");
     setText("Synced changes");
     setreShowSave(false);
-  }
+  }, [saveChanges, setText, setreShowSave]);
 
   useEffect(() => {
     if (reShowSave) {
@@ -43,7 +42,7 @@ function MainCheckout() {
         await saveClicked();
       })();
     }
-  }, [reShowSave]);
+  }, [reShowSave, saveClicked]);
   function updateCur(e) {
     let { name, value } = e.target;
     setCur((prev) => ({

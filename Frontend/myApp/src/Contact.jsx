@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import ContactStyles from "./Contact.module.css";
 import { useSyncContext } from "./context/SyncContext.js";
 function Contact() {
@@ -12,7 +12,7 @@ function Contact() {
       isMounted.current = false;
     };
   }, []);
-  async function saveClicked() {
+  const saveClicked = useCallback(async () => {
     if (!isMounted.current) return;
     setText("Syncing changes");
     console.log("Syncing changes");
@@ -22,7 +22,7 @@ function Contact() {
     console.log("Synced changes");
     setText("Synced changes");
     setreShowSave(false);
-  }
+  }, [saveChanges, setText, setreShowSave]);
 
   useEffect(() => {
     if (reShowSave) {
@@ -30,7 +30,7 @@ function Contact() {
         await saveClicked();
       })();
     }
-  }, [reShowSave]);
+  }, [reShowSave, saveClicked]);
   return (
     <>
       {reShowSave && <div className="syncText">{text}</div>}

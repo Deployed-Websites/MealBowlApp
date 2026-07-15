@@ -5,7 +5,7 @@
 // just calls useSyncContext() (from SyncContext.js) instead of receiving it
 // as props.
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { SyncContext } from "./SyncContext.js";
 import {
   getEverythingForThatUser,
@@ -19,7 +19,7 @@ export function SyncProvider({ children }) {
   const [processing, setprocessing] = useState(false);
   const [text, setText] = useState("Save all changes");
 
-  async function callCheckoutData() {
+  const callCheckoutData = useCallback(async () => {
     let result = await getEverythingForThatUser();
     if (Object.keys(result).length === 0) {
       result = {};
@@ -27,9 +27,9 @@ export function SyncProvider({ children }) {
     if (result && !result.error) {
       sessionStorage.setItem("CheckoutData", JSON.stringify(result));
     }
-  }
+  }, []);
 
-  async function callAdminData() {
+  const callAdminData = useCallback(async () => {
     let everythingResult = await getEverything();
     let pricesResult = await fetchPrices();
     if (Object.keys(everythingResult).length === 0) {
@@ -44,12 +44,12 @@ export function SyncProvider({ children }) {
     if (pricesResult && !pricesResult.error) {
       sessionStorage.setItem("AdminPriceData", JSON.stringify(pricesResult));
     }
-  }
+  }, []);
 
-  async function saveChanges() {
+  const saveChanges = useCallback(async () => {
     await callCheckoutData();
     await callAdminData();
-  }
+  }, [callCheckoutData, callAdminData]);
 
   const value = {
     somethingChangedinLogin,

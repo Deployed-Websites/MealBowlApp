@@ -1,6 +1,6 @@
 import BowlImage from "./BowlImage.jsx";
 import HomepageStyles from "./HomePage.module.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import React from "react";
 import bowl from "./assets/bowl.png";
 import bowl3 from "./assets/Paneer power bowl.jpg";
@@ -25,7 +25,7 @@ function RenderBowls() {
       isMounted.current = false;
     };
   }, []);
-  async function saveClicked() {
+  const saveClicked = useCallback(async () => {
     if (!isMounted.current) return;
     setText("Syncing changes");
     console.log("Syncing changes");
@@ -35,7 +35,7 @@ function RenderBowls() {
     console.log("Synced changes");
     setText("Synced changes");
     setreShowSave(false);
-  }
+  }, [saveChanges, setText, setreShowSave]);
 
   useEffect(() => {
     if (reShowSave) {
@@ -43,7 +43,7 @@ function RenderBowls() {
         await saveClicked();
       })();
     }
-  }, [reShowSave]);
+  }, [reShowSave, saveClicked]);
   useEffect(() => {
     (async () => {
       const tok = await ensureCSRFToken();

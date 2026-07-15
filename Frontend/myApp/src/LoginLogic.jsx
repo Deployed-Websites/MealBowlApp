@@ -5,7 +5,7 @@ import {
   checkUserPerm,
   ensureCSRFToken,
 } from "./utils/api.js";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSyncContext } from "./context/SyncContext.js";
 import LoginStyles from "./Login.module.css";
 function RegisterorLoginPage() {
@@ -33,7 +33,7 @@ function RegisterorLoginPage() {
       isMounted.current = false;
     };
   }, []);
-  async function saveClicked() {
+  const saveClicked = useCallback(async () => {
     if (!isMounted.current) return;
     setText("Syncing changes");
     console.log("Syncing changes");
@@ -43,7 +43,7 @@ function RegisterorLoginPage() {
     console.log("Synced changes");
     setText("Synced changes");
     setreShowSave(false);
-  }
+  }, [saveChanges, setText, setreShowSave]);
 
   useEffect(() => {
     if (reShowSave) {
@@ -51,7 +51,7 @@ function RegisterorLoginPage() {
         await saveClicked();
       })();
     }
-  }, [reShowSave]);
+  }, [reShowSave, saveClicked]);
 
   function updateRegisterData(e, inputField) {
     if (inputField) {

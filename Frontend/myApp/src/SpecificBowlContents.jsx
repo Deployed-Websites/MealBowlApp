@@ -1,5 +1,5 @@
 import BowlContentsStyles from "./Specific.module.css";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   updateOrder,
@@ -28,7 +28,7 @@ function Contents() {
       isMounted.current = false;
     };
   }, []);
-  async function saveClicked() {
+  const saveClicked = useCallback(async () => {
     if (!isMounted.current) return;
     setText("Syncing changes");
     console.log("Syncing changes");
@@ -38,7 +38,7 @@ function Contents() {
     console.log("Synced changes");
     setText("Synced changes");
     setreShowSave(false);
-  }
+  }, [saveChanges, setText, setreShowSave]);
 
   useEffect(() => {
     if (reShowSave) {
@@ -46,7 +46,7 @@ function Contents() {
         await saveClicked();
       })();
     }
-  }, [reShowSave]);
+  }, [reShowSave, saveClicked]);
   const Hot = {
     "Soya-Chunk-High-Protein-Bowl": true,
     "Paneer-Power-Bowl": true,
