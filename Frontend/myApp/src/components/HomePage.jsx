@@ -1,12 +1,12 @@
 import BowlImage from "./BowlImage.jsx";
 import HomepageStyles from "./HomePage.module.css";
 import React from "react";
-import logo from "./assets/logo.png";
-import { BOWLS } from "./constants/bowls.js";
+import logo from "../assets/logo.png";
+import { BOWLS } from "../constants/bowls.js";
 
-import { useSyncContext } from "./context/SyncContext.js";
-import { useSaveSync } from "./customHooks/useSaveSync.js";
-import { useEnsureCSRF } from "./customHooks/useEnsureCSRF.js";
+import { useSyncContext } from "../context/SyncContext.js";
+import { useSaveSync } from "../customHooks/useSaveSync.js";
+import { useEnsureCSRF } from "../customHooks/useEnsureCSRF.js";
 import { Link } from "react-router-dom";
 function RenderBowls() {
   const { reShowSave, processing, text } = useSyncContext();

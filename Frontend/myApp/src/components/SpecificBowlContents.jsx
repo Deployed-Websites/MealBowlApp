@@ -6,10 +6,10 @@ import {
   deleteOrder,
   updateBasket,
   updateBasketForDeletedOrder,
-} from "./utils/api.js";
-import { useSyncContext } from "./context/SyncContext.js";
-import { useSaveSync } from "./customHooks/useSaveSync.js";
-import { getBowlBySlug } from "./constants/bowls.js";
+} from "../utils/api.js";
+import { useSyncContext } from "../context/SyncContext.js";
+import { useSaveSync } from "../customHooks/useSaveSync.js";
+import { getBowlBySlug } from "../constants/bowls.js";
 
 function Contents() {
   const { text, reShowSave, setreShowSave } = useSyncContext();

@@ -1,12 +1,12 @@
-import RenderBowls from "./HomePage.jsx";
-import Contents from "./SpecificBowlContents.jsx";
-import Contact from "./Contact.jsx";
-import MainCheckout from "./MainCheckout.jsx";
-import AdminPage from "./Admin.jsx";
-import LoginFeature from "./LoginLogic.jsx";
+import RenderBowls from "./components/HomePage.jsx";
+import Contents from "./components/SpecificBowlContents.jsx";
+import Contact from "./components/Contact.jsx";
+import MainCheckout from "./components/MainCheckout.jsx";
+import AdminPage from "./components/Admin.jsx";
+import LoginFeature from "./components/LoginLogic.jsx";
 
-import "./globalStyles.css";
-import "./variables.css";
+import "./styles/globalStyles.css";
+import "./styles/variables.css";
 
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";

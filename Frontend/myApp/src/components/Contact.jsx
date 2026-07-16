@@ -1,6 +1,6 @@
 import ContactStyles from "./Contact.module.css";
-import { useSyncContext } from "./context/SyncContext.js";
-import { useSaveSync } from "./customHooks/useSaveSync.js";
+import { useSyncContext } from "../context/SyncContext.js";
+import { useSaveSync } from "../customHooks/useSaveSync.js";
 function Contact() {
   const { reShowSave, text } = useSyncContext();
   useSaveSync();

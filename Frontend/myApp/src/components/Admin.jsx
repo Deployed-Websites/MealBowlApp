@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getEverything, getPrices as fetchPrices } from "./utils/api.js";
+import { getEverything, getPrices as fetchPrices } from "../utils/api.js";
 
 function AdminPage() {
   const [allData, setAllData] = useState([]);

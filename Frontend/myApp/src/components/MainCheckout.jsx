@@ -4,9 +4,9 @@ import {
   deleteOrder,
   updateBasket,
   updateBasketForDeletedOrder,
-} from "./utils/api.js";
-import { useSyncContext } from "./context/SyncContext.js";
-import { useSaveSync } from "./customHooks/useSaveSync.js";
+} from "../utils/api.js";
+import { useSyncContext } from "../context/SyncContext.js";
+import { useSaveSync } from "../customHooks/useSaveSync.js";
 import React from "react";
 function MainCheckout() {
   const { reShowSave, setreShowSave, text } = useSyncContext();
