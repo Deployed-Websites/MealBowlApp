@@ -5,51 +5,26 @@ import {
   checkUserPerm,
   ensureCSRFToken,
 } from "./utils/api.js";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useSyncContext } from "./context/SyncContext.js";
+import { useSaveSync } from "./customHooks/useSaveSync.js";
+import { useEnsureCSRF } from "./customHooks/useEnsureCSRF.js";
 import LoginStyles from "./Login.module.css";
 function RegisterorLoginPage() {
   const {
     setsomethingChangedinLogin,
-    saveChanges,
     reShowSave,
     setreShowSave,
     processing,
     setprocessing,
     text,
-    setText,
   } = useSyncContext();
+  useSaveSync();
+  useEnsureCSRF();
   const [DontSkipLogin, setDontSkipLogin] = useState(false);
   const [registerData, setRegisterData] = useState({});
   const [manualLogout, setManualLogout] = useState(false);
   const [LogoutState, setLogoutState] = useState("Logout");
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-  const saveClicked = useCallback(async () => {
-    if (!isMounted.current) return;
-    setText("Syncing changes");
-    console.log("Syncing changes");
-    await saveChanges();
-
-    if (!isMounted.current) return;
-    console.log("Synced changes");
-    setText("Synced changes");
-    setreShowSave(false);
-  }, [saveChanges, setText, setreShowSave]);
-
-  useEffect(() => {
-    if (reShowSave) {
-      (async () => {
-        await saveClicked();
-      })();
-    }
-  }, [reShowSave, saveClicked]);
 
   function updateRegisterData(e, inputField) {
     if (inputField) {
@@ -117,7 +92,6 @@ function RegisterorLoginPage() {
       console.log("Set mostrecentlogin");
       sessionStorage.setItem("Logged-In", true);
       setLogoutState("Logout");
-      await saveClicked();
       return true;
     } else {
       updateRegisterData(
@@ -182,12 +156,6 @@ function RegisterorLoginPage() {
       logoutfunction();
     }
   }
-
-  useEffect(() => {
-    (async () => {
-      await ensureCSRFToken();
-    })();
-  }, []);
 
   useEffect(() => {
     (async () => {

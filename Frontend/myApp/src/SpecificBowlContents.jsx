@@ -1,5 +1,5 @@
 import BowlContentsStyles from "./Specific.module.css";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   updateOrder,
@@ -8,11 +8,12 @@ import {
   updateBasketForDeletedOrder,
 } from "./utils/api.js";
 import { useSyncContext } from "./context/SyncContext.js";
+import { useSaveSync } from "./customHooks/useSaveSync.js";
 import { getBowlBySlug } from "./constants/bowls.js";
 
 function Contents() {
-  const { saveChanges, text, setText, reShowSave, setreShowSave } =
-    useSyncContext();
+  const { text, reShowSave, setreShowSave } = useSyncContext();
+  useSaveSync();
   window.scrollTo(0, 0);
   const { bowlID } = useParams();
   const [ingredientsClicked, setingredientsClicked] = useState(true);
@@ -21,33 +22,6 @@ function Contents() {
   const [orderClicked, setOrderClicked] = useState(false);
   const [orderData, setorderData] = useState({});
   const [processing, setProcessing] = useState(false);
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-  const saveClicked = useCallback(async () => {
-    if (!isMounted.current) return;
-    setText("Syncing changes");
-    console.log("Syncing changes");
-    await saveChanges();
-
-    if (!isMounted.current) return;
-    console.log("Synced changes");
-    setText("Synced changes");
-    setreShowSave(false);
-  }, [saveChanges, setText, setreShowSave]);
-
-  useEffect(() => {
-    if (reShowSave) {
-      (async () => {
-        await saveClicked();
-      })();
-    }
-  }, [reShowSave, saveClicked]);
   const bowl = getBowlBySlug(bowlID);
   const bowlInfo = bowl ? bowl.ingredients : ["No ingredients found"];
   const bowlName = bowl ? bowl.name : bowlID;

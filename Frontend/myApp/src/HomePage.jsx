@@ -1,49 +1,17 @@
 import BowlImage from "./BowlImage.jsx";
 import HomepageStyles from "./HomePage.module.css";
-import { useEffect, useRef, useCallback } from "react";
 import React from "react";
 import logo from "./assets/logo.png";
 import { BOWLS } from "./constants/bowls.js";
 
-import { ensureCSRFToken } from "./utils/api.js";
 import { useSyncContext } from "./context/SyncContext.js";
+import { useSaveSync } from "./customHooks/useSaveSync.js";
+import { useEnsureCSRF } from "./customHooks/useEnsureCSRF.js";
 import { Link } from "react-router-dom";
 function RenderBowls() {
-  const { saveChanges, reShowSave, setreShowSave, processing, text, setText } =
-    useSyncContext();
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-  const saveClicked = useCallback(async () => {
-    if (!isMounted.current) return;
-    setText("Syncing changes");
-    console.log("Syncing changes");
-    await saveChanges();
-
-    if (!isMounted.current) return;
-    console.log("Synced changes");
-    setText("Synced changes");
-    setreShowSave(false);
-  }, [saveChanges, setText, setreShowSave]);
-
-  useEffect(() => {
-    if (reShowSave) {
-      (async () => {
-        await saveClicked();
-      })();
-    }
-  }, [reShowSave, saveClicked]);
-  useEffect(() => {
-    (async () => {
-      const tok = await ensureCSRFToken();
-      console.log("Token set:", tok);
-    })();
-  }, []);
+  const { reShowSave, processing, text } = useSyncContext();
+  useSaveSync();
+  useEnsureCSRF();
   return (
     <>
       {reShowSave && <div className="syncText">{text}</div>}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   updateOrder,
   deleteOrder,
@@ -6,43 +6,17 @@ import {
   updateBasketForDeletedOrder,
 } from "./utils/api.js";
 import { useSyncContext } from "./context/SyncContext.js";
+import { useSaveSync } from "./customHooks/useSaveSync.js";
 import React from "react";
 function MainCheckout() {
-  const { saveChanges, reShowSave, setreShowSave, text, setText } =
-    useSyncContext();
+  const { reShowSave, setreShowSave, text } = useSyncContext();
+  useSaveSync();
   const [rows, setRows] = useState(0);
   const [checkingOut, setCheckingOut] = useState(false);
   const [cur, setCur] = useState({});
   const [userData, setUserData] = useState({});
   const [CheckoutData, setCheckoutData] = useState({});
   const [trackPrice, setTrackPrice] = useState(null);
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-  const saveClicked = useCallback(async () => {
-    if (!isMounted.current) return;
-    setText("Syncing changes");
-    console.log("Syncing changes");
-    await saveChanges();
-
-    if (!isMounted.current) return;
-    console.log("Synced changes");
-    setText("Synced changes");
-    setreShowSave(false);
-  }, [saveChanges, setText, setreShowSave]);
-
-  useEffect(() => {
-    if (reShowSave) {
-      (async () => {
-        await saveClicked();
-      })();
-    }
-  }, [reShowSave, saveClicked]);
   function updateCur(e) {
     let { name, value } = e.target;
     setCur((prev) => ({
