@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { useSyncContext } from "../context/SyncContext.js";
 import { useSaveSync } from "../customHooks/useSaveSync.js";
 import { useEnsureCSRF } from "../customHooks/useEnsureCSRF.js";
-import LoginStyles from "./Login.module.css";
+import LoginStyles from "./modulesCSSs/Login.module.css";
 function RegisterorLoginPage() {
   const {
     setsomethingChangedinLogin,

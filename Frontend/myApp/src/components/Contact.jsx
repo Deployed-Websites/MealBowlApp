@@ -1,4 +1,4 @@
-import ContactStyles from "./Contact.module.css";
+import ContactStyles from "./modulesCSSs/Contact.module.css";
 import { useSyncContext } from "../context/SyncContext.js";
 import { useSaveSync } from "../customHooks/useSaveSync.js";
 function Contact() {

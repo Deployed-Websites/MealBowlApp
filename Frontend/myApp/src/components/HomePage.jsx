@@ -1,5 +1,5 @@
-import BowlImage from "./BowlImage.jsx";
-import HomepageStyles from "./HomePage.module.css";
+import BowlImage from "./modulesCSSs/BowlImage.module.css";
+import HomepageStyles from "./modulesCSSs/HomePage.module.css";
 import React from "react";
 import logo from "../assets/logo.png";
 import { BOWLS } from "../constants/bowls.js";

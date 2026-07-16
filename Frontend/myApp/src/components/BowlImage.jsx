@@ -1,4 +1,4 @@
-import BowlStyles from "./BowlImage.module.css";
+import BowlStyles from "./modulesCSSs/BowlImage.module.css";
 import { Link } from "react-router-dom";
 import React from "react";
 function BowlImage(props) {
