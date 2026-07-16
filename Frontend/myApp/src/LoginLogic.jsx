@@ -72,10 +72,6 @@ function RegisterorLoginPage() {
       const loginToAccount = await apiLogin(registerData);
       if (loginToAccount.message) {
         setreShowSave(true);
-        localStorage.setItem(
-          "User-" + registerData.username,
-          JSON.stringify(registerData),
-        );
         sessionStorage.setItem("Logged-In", true);
         const admin = await checkAdmin();
         setsomethingChangedinLogin((prev) => prev + 1);
@@ -97,27 +93,6 @@ function RegisterorLoginPage() {
     }
     setprocessing(false);
   }
-  async function verifyLocally() {
-    let lastIndex = -1;
-    for (let i = 0; i < localStorage.length; i++) {
-      const Currentkey = localStorage.key(i);
-      if (Currentkey.includes("User-")) {
-        lastIndex = i;
-      }
-    }
-    if (lastIndex != -1) {
-      const key = localStorage.getItem("MostRecentLogin");
-      const value = JSON.parse(localStorage.getItem(key));
-      setRegisterData(value);
-      const verification = await verifyUsingDatabase(value);
-      if (verification) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    return false;
-  }
   async function verifyUsingDatabase(data = {}) {
     let dataToUse;
     if (Object.keys(registerData).length !== 0) {
@@ -137,10 +112,6 @@ function RegisterorLoginPage() {
       } else {
         sessionStorage.setItem("admin", false);
       }
-      localStorage.setItem(
-        "User-" + dataToUse.username,
-        JSON.stringify(dataToUse),
-      );
       setprocessing(false);
       localStorage.setItem("MostRecentLogin", "User-" + dataToUse.username);
       console.log("Set mostrecentlogin");
@@ -164,6 +135,21 @@ function RegisterorLoginPage() {
   async function checkAdmin() {
     const result = await checkUserPerm();
     return !!result.admin;
+  }
+  // Django's session cookie already keeps the user logged in across page
+  // reloads (it persists ~2 weeks by default, per SESSION_COOKIE_AGE) - so
+  // there's no need to store credentials anywhere to "remember" a login.
+  // This just asks the backend "is my current session cookie still valid?"
+  // checkUserPerm() returns {admin: true/false} if logged in, or an
+  // {error: ...} object (401) if not - used here to tell those two cases
+  // apart, since checkAdmin() alone can't distinguish "not logged in" from
+  // "logged in but not an admin".
+  async function restoreSessionFromCookie() {
+    const result = await checkUserPerm();
+    if (result && !result.error && typeof result.admin !== "undefined") {
+      return { loggedIn: true, admin: !!result.admin };
+    }
+    return { loggedIn: false, admin: false };
   }
   async function logoutfunction() {
     sessionStorage.removeItem("admin");
@@ -208,12 +194,12 @@ function RegisterorLoginPage() {
       const flag = JSON.parse(sessionStorage.getItem("Logged-In")) ?? false;
       if (!flag && !manualLogout) {
         await ensureCSRFToken();
-        const ver = await verifyLocally();
-        console.log(ver);
-        if (ver) {
-          sessionStorage.setItem("Logged-In", true);
-        } else {
-          sessionStorage.setItem("Logged-In", false);
+        const { loggedIn, admin } = await restoreSessionFromCookie();
+        console.log("Session still valid:", loggedIn);
+        sessionStorage.setItem("Logged-In", loggedIn);
+        if (loggedIn) {
+          sessionStorage.setItem("admin", admin);
+          setLogoutState("Logout");
         }
       } else if (flag && !manualLogout) {
         console.log("Here");
@@ -228,10 +214,10 @@ function RegisterorLoginPage() {
       }
     })();
     // Intentionally runs once on mount only, to restore login state from
-    // localStorage. Adding `manualLogout`/`verifyLocally` as deps would
+    // the existing session cookie. Adding `manualLogout` as a dep would
     // change behavior (e.g. re-firing this right after every logout) -
-    // properly fixing that means wrapping verifyLocally -> verifyUsingDatabase
-    // -> checkAdmin in useCallback, which is a bigger refactor for later.
+    // properly fixing that means wrapping the functions above in
+    // useCallback, which is a bigger refactor for later.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -333,7 +319,7 @@ function RegisterorLoginPage() {
                 value={registerData.password || ""}
                 id="password"
                 name="password"
-                type="text"
+                type="password"
                 placeholder="Enter password here"
                 disabled={processing}
                 onChange={(e) => updateRegisterData(e, true)}

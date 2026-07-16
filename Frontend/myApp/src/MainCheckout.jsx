@@ -69,7 +69,7 @@ function MainCheckout() {
       bowlName,
     );
     console.log(changedValue > originalValue);
-    console.log(0 < changedValue < originalValue);
+    console.log(changedValue > 0 && changedValue < originalValue);
     console.log(changedValue === 0);
     setreShowSave((prev) => prev + 1);
     setCheckingOut(true);
@@ -108,7 +108,7 @@ function MainCheckout() {
       await updateOrder(totalData);
       await updateBasket(totalData);
       setreShowSave(true);
-    } else if (0 < changedValue < originalValue) {
+    } else if (changedValue > 0 && changedValue < originalValue) {
       dataToChange[userKey][bowlName]["NumberofBowls"] = changedValue;
       dataToChange2[userKey][bowlName]["NumberofBowls"] = changedValue;
       dataToChange3[userKey]["price"] =
