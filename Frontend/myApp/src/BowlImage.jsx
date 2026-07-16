@@ -2,15 +2,11 @@ import BowlStyles from "./BowlImage.module.css";
 import { Link } from "react-router-dom";
 import React from "react";
 function BowlImage(props) {
-  const bowlID = props.name
-    .split("")
-    .map((char) => (char === " " ? "-" : char))
-    .join("");
   return (
     <>
       <div className={BowlStyles.item}>
         <Link
-          to={`/contents/${bowlID}`}
+          to={`/contents/${props.slug}`}
           className={`${BowlStyles.bowl} ${BowlStyles.reSize}`}
         >
           <img
@@ -30,5 +26,3 @@ function BowlImage(props) {
 }
 
 export default BowlImage;
-
-//

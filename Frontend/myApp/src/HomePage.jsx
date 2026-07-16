@@ -2,14 +2,8 @@ import BowlImage from "./BowlImage.jsx";
 import HomepageStyles from "./HomePage.module.css";
 import { useEffect, useRef, useCallback } from "react";
 import React from "react";
-import bowl from "./assets/bowl.png";
-import bowl3 from "./assets/Paneer power bowl.jpg";
-import bowl4 from "./assets/bowl4.jpg";
-import bowl5 from "./assets/bowl5.jpg";
-import bowl6 from "./assets/bowl6.jpg";
-import bowl7 from "./assets/bowl7.jpg";
-import bowl8 from "./assets/Rajma-Chickpea superfood bowl.jpg";
 import logo from "./assets/logo.png";
+import { BOWLS } from "./constants/bowls.js";
 
 import { ensureCSRFToken } from "./utils/api.js";
 import { useSyncContext } from "./context/SyncContext.js";
@@ -120,35 +114,15 @@ function RenderBowls() {
         </div>
       </div>
       <div id="Bowls" className={HomepageStyles.arrangeBowls}>
-        <BowlImage
-          name="Soya Chunk High-Protein Bowl"
-          price="₹ 200"
-          picture={bowl}
-        />
-        <BowlImage name="Paneer Power Bowl" price="₹ 300" picture={bowl3} />
-        <BowlImage name="Tofu Stir-Fry Bowl" price="₹ 400" picture={bowl4} />
-        <BowlImage
-          name="Chicken Tikka Macro Bowl"
-          price="₹ 500"
-          picture={bowl5}
-        />
-
-        <BowlImage
-          name="Fish & Veggie Grain Bowl"
-          price="₹ 600"
-          picture={bowl6}
-        />
-        <BowlImage
-          name="Egg Bhurji Nutrition Bowl"
-          price="₹ 700"
-          picture={bowl7}
-        />
-        <BowlImage name="Rajma Superfood Bowl" price="₹ 800" picture={bowl8} />
-        <BowlImage
-          name="Eggless Bhurji & Oats Bowl"
-          price="₹ 900"
-          picture={bowl}
-        />
+        {BOWLS.map((bowlItem) => (
+          <BowlImage
+            key={bowlItem.slug}
+            slug={bowlItem.slug}
+            name={bowlItem.name}
+            price={`₹ ${bowlItem.price}`}
+            picture={bowlItem.picture}
+          />
+        ))}
       </div>
     </>
   );
