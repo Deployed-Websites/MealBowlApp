@@ -32,7 +32,6 @@ Examples
 """
 
 import argparse
-import os
 import random
 import re
 import sys
@@ -66,7 +65,6 @@ def generate_files(folder, count, sheet_name, col, row_start, row_end,
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
 
-    num_rows = row_end - row_start + 1
     pad = len(str(count))  # zero-pad filenames
 
     for i in range(1, count + 1):
