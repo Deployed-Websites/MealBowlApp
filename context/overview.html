@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MealBowlApp — Project Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f4ef;
+    --surface:#ffffff;
+    --surface-sunken:#efece3;
+    --ink:#241f16;
+    --ink-soft:#5a5346;
+    --ink-faint:#8c8474;
+    --line:#e1dbcb;
+    --accent:#a8562f;
+    --accent-ink:#ffffff;
+    --accent-soft:#f3e2d3;
+    --shadow:0 1px 2px rgba(36,31,22,.04), 0 8px 24px -12px rgba(36,31,22,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17140f;
+      --surface:#211c14;
+      --surface-sunken:#1b170f;
+      --ink:#efe8d9;
+      --ink-soft:#b8ad97;
+      --ink-faint:#7d7462;
+      --line:#3a3324;
+      --accent:#e08a56;
+      --accent-ink:#1c1006;
+      --accent-soft:#3a2617;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17140f;
+    --surface:#211c14;
+    --surface-sunken:#1b170f;
+    --ink:#efe8d9;
+    --ink-soft:#b8ad97;
+    --ink-faint:#7d7462;
+    --line:#3a3324;
+    --accent:#e08a56;
+    --accent-ink:#1c1006;
+    --accent-soft:#3a2617;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    line-height:1.55;
+  }
+  code, .mono{font-family:"IBM Plex Mono",monospace;}
+  .ruler{
+    height:6px;
+    width:100%;
+    background:repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 10px);
+    opacity:.55;
+  }
+  header.hero{
+    padding:56px 32px 40px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+  header.hero h1{
+    font-size:38px;
+    margin:0 0 14px;
+    letter-spacing:-.01em;
+  }
+  .lede{
+    font-size:17px;
+    color:var(--ink-soft);
+    max-width:62ch;
+    margin:0 0 22px;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .pill{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12px;
+    padding:5px 12px;
+    border-radius:999px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    border:1px solid var(--line);
+    font-weight:600;
+  }
+  .layout{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px 80px;
+    display:grid;
+    grid-template-columns:230px 1fr;
+    gap:40px;
+    align-items:start;
+  }
+  nav.toc{
+    position:sticky;
+    top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    font-size:13.5px;
+  }
+  nav.toc a{
+    display:block;
+    padding:7px 10px;
+    border-radius:8px;
+    color:var(--ink-soft);
+    text-decoration:none;
+  }
+  nav.toc a:hover{background:var(--surface-sunken);color:var(--ink);}
+  nav.toc a.toc-current{
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-weight:600;
+  }
+  nav.toc .toc-sub{padding-left:22px;font-size:12.5px;}
+  main{display:flex;flex-direction:column;gap:24px;min-width:0;}
+  section.card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px 28px;
+    box-shadow:var(--shadow);
+  }
+  section.card h2{
+    font-size:19px;
+    margin:0 0 4px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .sub{
+    color:var(--ink-faint);
+    font-size:13.5px;
+    margin:0 0 18px;
+  }
+  .milestone-tag{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:3px 9px;
+    border-radius:999px;
+    font-weight:600;
+  }
+  .milestone-tag.current{background:var(--accent);color:var(--accent-ink);}
+  .milestone-tag.past{background:var(--surface-sunken);color:var(--ink-faint);border:1px solid var(--line);}
+  .milestone-divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    color:var(--ink-faint);
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    margin:6px 0;
+  }
+  .milestone-divider::before, .milestone-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  ul.narrative{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;}
+  ul.narrative li{color:var(--ink-soft);}
+  ul.narrative li b, ul.narrative li strong{color:var(--ink);}
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:12px;
+  }
+  .stat-tile{
+    background:var(--surface-sunken);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .stat-tile .label{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-faint);
+    margin-bottom:6px;
+  }
+  .stat-tile .value{font-size:14.5px;font-weight:600;}
+  pre.tree{
+    background:var(--surface-sunken);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;
+    overflow-x:auto;
+    line-height:1.65;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  table.keyfiles{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  table.keyfiles th{
+    text-align:left;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--ink-faint);
+    padding:0 10px 8px;
+    border-bottom:1px solid var(--line);
+  }
+  table.keyfiles td{
+    padding:10px 10px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  table.keyfiles tr:last-child td{border-bottom:none;}
+  table.keyfiles code{
+    background:var(--surface-sunken);
+    padding:1px 6px;
+    border-radius:5px;
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .rough-list{display:flex;flex-direction:column;gap:10px;}
+  .rough-item{
+    border-left:3px solid var(--accent);
+    background:var(--surface-sunken);
+    border-radius:0 8px 8px 0;
+    padding:10px 16px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .rough-item b{color:var(--ink);}
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:20px 32px 60px;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;
+    color:var(--ink-faint);
+  }
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr;}
+    nav.toc{
+      position:static;
+      flex-direction:row;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    nav.toc .toc-sub{padding-left:10px;}
+  }
+</style>
+</head>
+<body>
+<div class="ruler"></div>
+<header class="hero">
+  <div class="eyebrow">Project Overview</div>
+  <h1>MealBowlApp — Jyoti's Superbowls</h1>
+  <p class="lede">A small ordering site where customers browse a fixed menu of healthy meal bowls, see ingredients and macros, and build up a running order that an admin can review across all customers.</p>
+  <div class="tags">
+    <span class="pill">React 19</span>
+    <span class="pill">Vite</span>
+    <span class="pill">React Router</span>
+    <span class="pill">Django</span>
+    <span class="pill">Postgres / SQLite</span>
+    <span class="pill">Session-cookie auth</span>
+    <span class="pill">GitHub Pages + Render</span>
+  </div>
+</header>
+<div class="layout">
+  <nav class="toc">
+    <a href="#since-last-change" class="toc-current">Since the last major change</a>
+    <a href="#major-original-build">Major change: original build</a>
+    <a href="#stack">Stack breakdown</a>
+    <a href="#source-layout">Source layout</a>
+    <a href="#key-files">Key files</a>
+    <a href="#rough-edges">Known rough edges</a>
+  </nav>
+  <main>
+    <section class="card" id="since-last-change">
+      <h2>Since the last major change <span class="milestone-tag current">Current</span></h2>
+      <p class="sub">This is the first documentation pass for this project — there is no newer activity yet to report beyond it.</p>
+      <ul class="narrative">
+        <li>This overview, along with a matching technical handoff document, was written for the first time by reviewing the whole project from scratch — the code, the way the two halves of the app talk to each other, and the history of changes made to it so far. Nothing in the app itself changed as part of this pass; this is purely a documentation exercise so that future work has a clear starting point.</li>
+        <li>While reviewing the project, a few loose ends were noticed and are worth flagging honestly rather than glossing over: a page that shows every customer's orders currently only shows whatever was last saved to the visitor's own browser rather than always fetching the newest information, and the ordering system does not double-check that the price a customer's browser reports for an order matches the real menu price. Neither of these has been fixed yet — they're just written down here so they aren't forgotten. See the "Known rough edges" section below for the complete list.</li>
+      </ul>
+    </section>
+
+    <div class="milestone-divider">Earlier</div>
+
+    <section class="card" id="major-original-build">
+      <h2>Major change: original build <span class="milestone-tag past">Past</span></h2>
+      <p class="sub">The app as it stood before this documentation pass — everything built up to now.</p>
+      <ul class="narrative">
+        <li>The core idea of the site was built: a public page listing a small menu of pre-made healthy meal bowls, a details page for each bowl showing its ingredients and nutrition breakdown, an account system so customers can register and log in, a running order/basket that customers can add to and adjust, and a checkout-style page to review that basket. No real payment step was ever added — checkout simply keeps track of what someone has ordered and what it adds up to.</li>
+        <li>A separate page was added for an administrator to see every customer's orders and totals in one place, so whoever runs the business can keep track of what's been requested without payment processing being involved.</li>
+        <li>Midway through building the site, a round of housekeeping was done: pieces of login and syncing logic that had been copied into several different pages were pulled out into shared, reusable pieces, files were reorganized into clearer folders, and all the communication with the server was consolidated into one place instead of being scattered across the app. This was a cleanup effort, not a change in what the app does for customers.</li>
+        <li>Separately, and unrelated to the meal bowl site itself, some personal file-organizing tools and notes ended up committed into the same project storage. They don't affect how the site works for customers, but they are flagged in the technical documentation as things that probably belong in their own, separate project.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="stack">
+      <h2>Stack breakdown</h2>
+      <p class="sub">The core pieces the app is built from.</p>
+      <div class="stat-grid">
+        <div class="stat-tile"><div class="label">Frontend</div><div class="value">React 19 + Vite 7</div></div>
+        <div class="stat-tile"><div class="label">Routing</div><div class="value">React Router v7</div></div>
+        <div class="stat-tile"><div class="label">Frontend state</div><div class="value">Custom React Context</div></div>
+        <div class="stat-tile"><div class="label">Styling</div><div class="value">CSS Modules + globals</div></div>
+        <div class="stat-tile"><div class="label">Backend</div><div class="value">Django (project "PostgreTest")</div></div>
+        <div class="stat-tile"><div class="label">Auth</div><div class="value">Django session cookies + custom CSRF middleware</div></div>
+        <div class="stat-tile"><div class="label">Database</div><div class="value">SQLite (dev) / Postgres (prod, implied)</div></div>
+        <div class="stat-tile"><div class="label">Frontend hosting</div><div class="value">GitHub Pages</div></div>
+        <div class="stat-tile"><div class="label">Backend hosting</div><div class="value">Render</div></div>
+        <div class="stat-tile"><div class="label">Automated tests</div><div class="value">None configured/written</div></div>
+      </div>
+    </section>
+
+    <section class="card" id="source-layout">
+      <h2>Source layout</h2>
+      <p class="sub">Where things live in the repository.</p>
+      <pre class="tree">MealBowlApp/
+├── docs/                     # generated GitHub Pages build output
+├── Backend/PostgreTest/      # Django backend
+│   └── testDB/               # models.py, views.py, urls.py, middleware/
+├── Frontend/
+│   ├── firebase/              # unused/orphaned Firebase config
+│   └── myApp/                 # the actual Vite React app
+│       └── src/
+│           ├── constants/bowls.js       # static bowl catalog
+│           ├── context/                 # SyncContext, SyncProvider
+│           ├── customHooks/             # useSaveSync, useEnsureCSRF
+│           ├── utils/api.js             # all backend calls
+│           └── components/              # HomePage, Admin, MainCheckout, etc.
+└── (unrelated personal tooling/files at repo root)</pre>
+    </section>
+
+    <section class="card" id="key-files">
+      <h2>Key files</h2>
+      <p class="sub">Where to start for common changes.</p>
+      <table class="keyfiles">
+        <tr><th>File</th><th>Owns</th></tr>
+        <tr><td><code>src/constants/bowls.js</code></td><td>Bowl catalog: names, prices, macros, ingredients, images</td></tr>
+        <tr><td><code>testDB/views.py</code> + <code>testDB/urls.py</code></td><td>Backend API endpoints/behavior</td></tr>
+        <tr><td><code>testDB/models.py</code></td><td>Database schema (needs a migration on change)</td></tr>
+        <tr><td><code>src/utils/api.js</code></td><td>All frontend-to-backend calls</td></tr>
+        <tr><td><code>src/App.jsx</code></td><td>Routes/pages</td></tr>
+        <tr><td><code>src/context/SyncProvider.jsx</code></td><td>Cross-page sync/cache-refresh behavior</td></tr>
+      </table>
+    </section>
+
+    <section class="card" id="rough-edges">
+      <h2>Known rough edges</h2>
+      <p class="sub">Provisional or unfinished areas a future contributor should know about before trusting or refactoring them.</p>
+      <div class="rough-list">
+        <div class="rough-item"><b>Admin page shows stale data.</b> It only displays whatever was last saved to the visitor's own browser and never asks the server for a fresh copy on its own.</div>
+        <div class="rough-item"><b>Order prices aren't double-checked.</b> The server currently trusts whatever price the customer's browser reports for an order rather than verifying it against the real menu.</div>
+        <div class="rough-item"><b>Leftover unused code.</b> An old login-helper file appears to have been fully replaced by newer shared code but was never removed.</div>
+        <div class="rough-item"><b>A sign-out edge case was intentionally left simplified</b> rather than fully polished, with a note left in the code to revisit it later.</div>
+        <div class="rough-item"><b>The app leans heavily on the browser's own temporary storage</b> to remember login state and cached data, rather than a more robust approach — this is the root cause of the stale admin page issue above.</div>
+        <div class="rough-item"><b>Diagnostic messages are still being printed</b> during normal use in a few places, left over from development.</div>
+        <div class="rough-item"><b>No automated tests exist</b> for either half of the app, though the tooling to run them is present.</div>
+        <div class="rough-item"><b>A sign-in setup for a different service was configured early on but never actually used</b> — the app authenticates a different way instead.</div>
+        <div class="rough-item"><b>Unrelated personal files and tools</b> (a spreadsheet-combining utility, generated sample files, and personal notes) are stored in the same project as the meal bowl site and should probably live somewhere separate.</div>
+      </div>
+    </section>
+  </main>
+</div>
+<footer>context/overview.html — updated on request, not automatically.</footer>
+</body>
+</html>
