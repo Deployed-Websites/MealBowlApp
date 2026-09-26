@@ -1,0 +1,24 @@
+# Intelligence system
+.claude/settings.local.json
+.claude/**/*.local.*
+.claude/.last_edit_hash
+.claude/.last_verified
+.claude/.current_task_id
+.ai/knowledge.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+dist/
+
+# Django
+db.sqlite3
+*.log
+
+# Env
+.env
+.env.*

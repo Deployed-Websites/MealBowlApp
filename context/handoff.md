@@ -1,5 +1,13 @@
 # MealBowlApp — Handoff
 
+## Session — 2026-09-26
+
+**What was done:** Installed the claude-intelligence-plugin intelligence system. Migrated the single `handoff.md` into the standard 15-doc context structure (`context/overview.md`, `architecture.md`, `dependencies.md`, `decisions.md`, `constraints.md`, `known-problems.md`, etc.). Created `.ai/rebuild_db.py` + `sync_context.py`, wired all 6 hook scripts into `.claude/hooks/`, set up `.claude/settings.json` with all 5 hook events, added `.gitignore`. Initialised `knowledge.db` with 15 docs indexed. All files staged for commit — commit + push blocked by auto-mode classifier; user needs to run `git commit` + `git push` manually (commands provided).
+
+**Next session:** Run `/safe-point` before any source edits. The PreToolUse hook will enforce this.
+
+---
+
 ## Purpose
 MealBowlApp (branded "Jyoti's Superbowls") is a small e-commerce site for ordering pre-configured healthy meal bowls (Indian gym/diet-style bowls). Users browse a fixed catalog of bowls, view ingredients and macros, register/log in, add quantities of bowls to a running order/basket, and check out by reviewing/adjusting that basket. There's an admin page that lists every user's orders and basket totals. No payment processing exists — "checkout" only tracks basket totals server-side; it's an order-tracking tool, not a real storefront with billing.
 
